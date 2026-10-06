@@ -24,4 +24,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "AppDummy"
 include(":app")
- 

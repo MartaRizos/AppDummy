@@ -4,15 +4,17 @@ plugins {
 }
 
 android {
-    namespace = "es.martaortiz.appdummy"
+    namespace = "es.javiercarrasco.appdummy"
     compileSdk {
-        version = release(37)
+        version = release(36) {
+            minorApiLevel = 1
+        }
     }
 
     defaultConfig {
-        applicationId = "es.martaortiz.appdummy"
-        minSdk = 24
-        targetSdk = 37
+        applicationId = "es.javiercarrasco.appdummy"
+        minSdk = 30
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -22,8 +24,7 @@ android {
     buildTypes {
         release {
             optimization {
-                enable = true
-                packageScope = setOf("androidx.**", "kotlin.**", "kotlinx.**")
+                enable = false
             }
         }
     }
@@ -52,4 +53,14 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    // Material Icons Extended
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    // Coil para la carga de imágenes
+    implementation("io.coil-kt.coil3:coil-compose:3.5.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.5.0")
+    val bom = platform(libs.androidx.compose.bom)
+    implementation(bom)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.activity.compose)
 }
