@@ -1,3 +1,4 @@
+
 package es.martaortiz.appdummy
 
 import android.os.Bundle
@@ -20,9 +21,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppDummyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                    PantallaBienvenida(
+                        onEntrar = { }
                     )
                 }
             }

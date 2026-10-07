@@ -4,15 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "es.javiercarrasco.appdummy"
+    namespace = "es.martaortiz.appdummy"
     compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
+        version = release(37)
     }
 
     defaultConfig {
-        applicationId = "es.javiercarrasco.appdummy"
+        applicationId = "es.martaortiz.appdummy"
         minSdk = 30
         targetSdk = 36
         versionCode = 1
