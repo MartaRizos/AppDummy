@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import es.martaortiz.appdummy.screens.PantallaListado
 import es.martaortiz.appdummy.ui.theme.AppDummyTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,6 +20,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            // Pantalla de Bienvenida
+            /*
             AppDummyTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     PantallaBienvenida(
@@ -26,6 +29,13 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+            */
+            //Pantalla de Listado de Libros
+
+            AppDummyTheme {
+                PantallaListado()
+            }
+
         }
     }
 }
