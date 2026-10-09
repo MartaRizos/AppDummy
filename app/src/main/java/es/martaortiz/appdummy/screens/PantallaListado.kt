@@ -22,6 +22,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import es.martaortiz.appdummy.R
+import android.content.Intent
 
 // ─── screens/PantallaListado.kt ───────────────────────────────────────────────────────────────
 
@@ -209,6 +210,8 @@ fun ItemLibro(
     onToggleLeido: (Int) -> Unit,
     onToggleFavorito: (Int) -> Unit
 ) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -290,31 +293,60 @@ fun ItemLibro(
                             MaterialTheme.colorScheme.onSurfaceVariant
                         }
                     )
-                }
 
-                // Botón de favorito
+
+                    // Botón de favorito
+                    IconButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            onToggleFavorito(libro.id)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = if (libro.esFavorito) {
+                                Icons.Default.Favorite
+                            } else {
+                                Icons.Default.FavoriteBorder
+                            },
+                            contentDescription = if (libro.esFavorito) {
+                                "Quitar favorito"
+                            } else {
+                                "Añadir favorito"
+                            },
+                            tint = if (libro.esFavorito) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            }
+                        )
+                    }
+                }
+                // Botón de compartir
                 IconButton(
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        onToggleFavorito(libro.id)
+
+                        val intent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "${libro.titulo} - ${libro.autor}"
+                            )
+                        }
+
+                        context.startActivity(
+                            Intent.createChooser(
+                                intent,
+                                "Compartir libro"
+                            )
+                        )
                     }
                 ) {
                     Icon(
-                        imageVector = if (libro.esFavorito) {
-                            Icons.Default.Favorite
-                        } else {
-                            Icons.Default.FavoriteBorder
-                        },
-                        contentDescription = if (libro.esFavorito) {
-                            "Quitar favorito"
-                        } else {
-                            "Añadir favorito"
-                        },
-                        tint = if (libro.esFavorito) {
-                            MaterialTheme.colorScheme.error
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        }
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Compartir libro",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -324,10 +356,32 @@ fun ItemLibro(
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun PantallaListadoPreview() {
-    MaterialTheme {
-        PantallaListado()
+    @Preview(showBackground = true)
+    @Composable
+    fun PantallaListadoPreview() {
+        MaterialTheme {
+            PantallaListado()
+        }
     }
-}
+
+    // Preview para tarjeta individual de un libro
+    @Preview(showBackground = true)
+    @Composable
+    fun ItemLibroPreview() {
+        MaterialTheme {
+            ItemLibro(
+                libro = LibroUI(
+                    id = 1,
+                    titulo = "Proyecto Hail Mary",
+                    autor = "Andy Weir",
+                    year = 2021,
+                    isbn = "9788418037016",
+                    cover = "",
+                    esFavorito = true,
+                    leido = false
+                ),
+                onToggleLeido = { },
+                onToggleFavorito = { }
+            )
+        }
+    }
