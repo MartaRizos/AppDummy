@@ -24,13 +24,19 @@ composeBom = "2026.06.01"
 
 ### Decisiones propias
 
-- Scroll en PantallaBienvenida.kt para que pueda verse todo el contenido con la orientación 
-  horizontal.
 - En PantallaListado.kt, he cambiado el Modifier de la función ItemLibro ya que en una rejilla de dos columnas una
   anchura de 200 podría ser excesiva.
 - En PantallaListado.kt, he renombrado la variable coincideGenero por coincideAutor, ya que se usa para la búsqueda
   de autor.
 - Insertado icono nocover.png en la carpeta drawable.
+- En PantallaGestionPermisos.kt, EstadoPermiso.Denegado y EstadoPermiso.DenegadoPermanentemente utilizaban el mismo
+  icono, el mismo color y el mismo mensaje. Para cumplir con el requisito R13 he introducido un when para presentar
+  interfaces diferentes según cada estado.
+- En PantallaGestionPermisos.kt añado la variable permisoSolicitado para recordar si ya hemos solicitado el permiso.
+- En PantallaListado.kt añado el botón de compartir siguiendo la estructura del botón de leído y favorito para cumplir
+  con R16.
+- En PantallaListado.kt añado un @Preview para la previsualización de una la tarjeta individual de un libro como pide el
+  requisito R17.
 
 #### Permisos declarados
 - Permiso normal de acceso a internet: <uses-permission android:name="android.permission.INTERNET" />
