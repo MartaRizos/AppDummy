@@ -13,29 +13,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import es.martaortiz.appdummy.screens.PantallaListado
+import es.martaortiz.appdummy.screens.PantallaGestionPermisos
 import es.martaortiz.appdummy.ui.theme.AppDummyTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
-            // Pantalla de Bienvenida
-            /*
             AppDummyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PantallaBienvenida(
+
+                // Cambio este valor según la pantalla a mostrar:
+                val pantalla = 2
+
+                when (pantalla) {
+                    1 -> PantallaBienvenida(
                         onEntrar = { }
                     )
+
+                    2 -> PantallaListado()
+
+                    3 -> PantallaGestionPermisos()
                 }
             }
-            */
-            //Pantalla de Listado de Libros
-
-            AppDummyTheme {
-                PantallaListado()
-            }
-
         }
     }
 }
@@ -48,6 +50,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
@@ -55,3 +58,5 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+
+
