@@ -259,3 +259,13 @@ fun PantallaGestionPermisos() {
         }
     }
 }
+
+// Vista previa de la pantalla completa
+@Preview(showBackground = true)
+@Composable
+fun PantallaGestionPermisosPreview() {
+
+    MaterialTheme {
+        PantallaGestionPermisos()
+    }
+}
