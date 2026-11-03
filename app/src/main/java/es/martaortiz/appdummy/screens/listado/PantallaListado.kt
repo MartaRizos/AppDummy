@@ -1,7 +1,6 @@
 package es.martaortiz.appdummy.screens.listado
 
 import android.content.Intent
-import android.util.Patterns
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -23,100 +22,55 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import es.martaortiz.appdummy.R
-
-// Modelo de datos simple
-data class LibroUI(
-    val id: Int = 0,
-    val titulo: String = "",
-    val autor: String = "",
-    val year: Int? = 1900,
-    val isbn: String = "",
-    val cover: String = "",
-    val esFavorito: Boolean = false,
-    val leido: Boolean = false
-)
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import es.martaortiz.appdummy.data.model.Libro
+import es.martaortiz.appdummy.data.repository.LibrosRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaListado() {
+fun PantallaListado(
+    viewModel: LibrosViewModel = viewModel(
+        factory = librosViewModelFactory
+    )
+) {
 
-    // Estado local de la pantalla
-    var busqueda by remember { mutableStateOf("") }
-    var autorSeleccionado by remember { mutableStateOf("Todos") }
+    // Observar los estados del ViewModel
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    var libros by remember {
-        mutableStateOf(
-            listOf(
-                LibroUI(
-                    id = 1,
-                    titulo = "Proyecto Hail Mary",
-                    autor = "Andy Weir",
-                    year = 2021,
-                    isbn = "9788418037016",
-                    cover = "https://covers.openlibrary.org/b/isbn/9788418037016-L.jpg",
-                    esFavorito = true,
-                    leido = false
-                ),
-                LibroUI(
-                    id = 2,
-                    titulo = "Juego de tronos",
-                    autor = "George R.R. Martin",
-                    year = 1996,
-                    isbn = "9780307951182",
-                    cover = "https://covers.openlibrary.org/b/isbn/9780307951182-L.jpg",
-                    esFavorito = true,
-                    leido = true
-                ),
-                LibroUI(
-                    id = 3,
-                    titulo = "Festín de cuervos",
-                    autor = "George R.R. Martin",
-                    year = 2005,
-                    isbn = "9780307951212",
-                    cover = "https://covers.openlibrary.org/b/isbn/9780307951212-L.jpg",
-                    esFavorito = false,
-                    leido = false
-                ),
-                LibroUI(
-                    id = 4,
-                    titulo = "Cementerio de Animales",
-                    autor = "Stephen King",
-                    year = 1983,
-                    isbn = "9788401499845",
-                    cover = "https://covers.openlibrary.org/b/isbn/9788401499845-L.jpg",
-                    esFavorito = false,
-                    leido = true
-                ),
-                LibroUI(
-                    id = 5,
-                    titulo = "El juego de Ender",
-                    autor = "Orson Scott Card",
-                    year = 1985,
-                    isbn = "9788498720068",
-                    cover = "https://covers.openlibrary.org/b/isbn/9788498720068-L.jpg",
-                    esFavorito = false,
-                    leido = true
-                )
-            )
-        )
+    val busqueda by viewModel.busqueda.collectAsStateWithLifecycle()
+
+    val autorSeleccionado by
+    viewModel.autorSeleccionado.collectAsStateWithLifecycle()
+
+    val librosFiltrados by
+    viewModel.librosFiltrados.collectAsStateWithLifecycle()
+
+    val autores = listOf("Todos") +
+            (uiState as? LibrosUiState.Exito)
+                ?.libros
+                ?.map { it.autor }
+                ?.distinct()
+                ?.sorted()
+                .orEmpty()
+
+// Estado del Snackbar
+    val snackbarHostState = remember {
+        SnackbarHostState()
     }
 
-    // Lista de autores para los filtros
-    val autores = listOf("Todos") +
-            libros.map { it.autor }.distinct().sorted()
-
-    // Filtrado de libros por título y autor
-    val librosFiltrados = libros.filter { libro ->
-
-        val coincideBusqueda =
-            busqueda.isBlank() ||
-                    libro.titulo.contains(busqueda, ignoreCase = true)
-
-        val coincideAutor =
-            autorSeleccionado == "Todos" ||
-                    libro.autor == autorSeleccionado
-
-        coincideBusqueda && coincideAutor
+// Recoger eventos del ViewModel
+    LaunchedEffect(viewModel) {
+        viewModel.eventos.collect { evento ->
+            when (evento) {
+                is LibrosEvento.MostrarMensaje -> {
+                    snackbarHostState.showSnackbar(evento.mensaje)
+                }
+            }
+        }
     }
 
     Scaffold(
@@ -144,7 +98,7 @@ fun PantallaListado() {
             // Barra de búsqueda
             OutlinedTextField(
                 value = busqueda,
-                onValueChange = { busqueda = it },
+                onValueChange = { viewModel.actualizarBusqueda(it) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -165,7 +119,7 @@ fun PantallaListado() {
                         visible = busqueda.isNotEmpty()
                     ) {
                         IconButton(
-                            onClick = { busqueda = "" }
+                            onClick = { viewModel.actualizarBusqueda("") }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
@@ -188,7 +142,7 @@ fun PantallaListado() {
                     FilterChip(
                         selected = autor == autorSeleccionado,
                         onClick = {
-                            autorSeleccionado = autor
+                            viewModel.seleccionarAutor(autor)
                         },
                         label = {
                             Text(autor)
@@ -197,73 +151,90 @@ fun PantallaListado() {
                 }
             }
 
-            // Resultados de la búsqueda
-            if (librosFiltrados.isEmpty()) {
+            // Resultados según el estado del ViewModel
+            when (uiState) {
 
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
+                is LibrosUiState.Cargando -> {
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
+                        CircularProgressIndicator()
+                    }
+                }
 
-                        Icon(
-                            imageVector = Icons.Default.SearchOff,
-                            contentDescription = null,
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                is LibrosUiState.Error -> {
 
-                        Spacer(
-                            modifier = Modifier.height(16.dp)
-                        )
+                    val mensaje = (uiState as LibrosUiState.Error).mensaje
 
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
-                            text = "Sin resultados para \"$busqueda\"",
-                            style = MaterialTheme.typography.bodyLarge
+                            text = mensaje,
+                            color = MaterialTheme.colorScheme.error
                         )
                     }
                 }
 
-            } else {
+                is LibrosUiState.Exito -> {
 
-                // Cuadrícula de libros
-                LazyVerticalGrid(
-                    contentPadding = PaddingValues(horizontal = 8.dp),
-                    columns = GridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                    if (librosFiltrados.isEmpty()) {
 
-                    items(
-                        items = librosFiltrados,
-                        key = { it.id }
-                    ) { libro ->
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
 
-                        ItemLibro(
-                            libro = libro,
+                                Icon(
+                                    imageVector = Icons.Default.SearchOff,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(64.dp),
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
 
-                            onToggleLeido = { id ->
-                                libros = libros.map {
-                                    if (it.id == id) {
-                                        it.copy(leido = !it.leido)
-                                    } else {
-                                        it
-                                    }
-                                }
-                            },
+                                Spacer(
+                                    modifier = Modifier.height(16.dp)
+                                )
 
-                            onToggleFavorito = { id ->
-                                libros = libros.map {
-                                    if (it.id == id) {
-                                        it.copy(esFavorito = !it.esFavorito)
-                                    } else {
-                                        it
-                                    }
-                                }
+                                Text(
+                                    text = "Sin resultados para \"$busqueda\"",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
                             }
-                        )
+                        }
+
+                    } else {
+
+                        LazyVerticalGrid(
+                            contentPadding = PaddingValues(horizontal = 8.dp),
+                            columns = GridCells.Fixed(2),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+
+                            items(
+                                items = librosFiltrados,
+                                key = { it.id }
+                            ) { libro ->
+
+                                ItemLibro(
+                                    libro = libro,
+                                    onToggleLeido = { id ->
+                                        viewModel.alternarLeido(id)
+                                    },
+                                    onToggleFavorito = { id ->
+                                        viewModel.alternarFavorito(id)
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -273,7 +244,7 @@ fun PantallaListado() {
 
 @Composable
 fun ItemLibro(
-    libro: LibroUI,
+    libro: Libro,
     onToggleLeido: (Int) -> Unit,
     onToggleFavorito: (Int) -> Unit
 ) {
@@ -292,7 +263,7 @@ fun ItemLibro(
         ) {
 
             // Portada del libro
-            if (Patterns.WEB_URL.matcher(libro.cover).matches()) {
+            if (libro.cover.isNotBlank()) {
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -448,7 +419,7 @@ fun ItemLibroPreview() {
 
     MaterialTheme {
         ItemLibro(
-            libro = LibroUI(
+            libro = Libro(
                 id = 1,
                 titulo = "Proyecto Hail Mary",
                 autor = "Andy Weir",
