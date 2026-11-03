@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 
 class LibrosViewModel(
     private val repository: LibrosRepository
@@ -22,6 +25,10 @@ class LibrosViewModel(
     )
     // Estado público de solo lectura para la interfaz
     val uiState: StateFlow<LibrosUiState> = _uiState.asStateFlow()
+
+    private val _eventos = MutableSharedFlow<LibrosEvento>()
+
+    val eventos: SharedFlow<LibrosEvento> = _eventos.asSharedFlow()
 
     private val _busqueda = MutableStateFlow("")
     val busqueda: StateFlow<String> = _busqueda.asStateFlow()
@@ -88,8 +95,30 @@ class LibrosViewModel(
     }
 
     fun alternarFavorito(id: Int) {
-        actualizarLibro(id) { libro ->
-            libro.copy(esFavorito = !libro.esFavorito)
+        val estadoActual = _uiState.value
+
+        if (estadoActual is LibrosUiState.Exito) {
+            val libro = estadoActual.libros.find { it.id == id }
+
+            if (libro != null) {
+                val nuevoEstado = !libro.esFavorito
+
+                actualizarLibro(id) { libroActual ->
+                    libroActual.copy(esFavorito = nuevoEstado)
+                }
+
+                viewModelScope.launch {
+                    val mensaje = if (nuevoEstado) {
+                        "Libro añadido a favoritos"
+                    } else {
+                        "Libro eliminado de favoritos"
+                    }
+
+                    _eventos.emit(
+                        LibrosEvento.MostrarMensaje(mensaje)
+                    )
+                }
+            }
         }
     }
 
