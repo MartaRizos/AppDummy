@@ -9,8 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import es.martaortiz.appdummy.screens.PantallaListado
-import es.martaortiz.appdummy.screens.PantallaGestionPermisos
+import es.martaortiz.appdummy.screens.listado.PantallaListado
+import es.martaortiz.appdummy.screens.permisos.PantallaGestionPermisos
+import es.martaortiz.appdummy.screens.bienvenida.PantallaBienvenida
 import es.martaortiz.appdummy.ui.theme.AppDummyTheme
 
 class MainActivity : ComponentActivity() {

@@ -1,4 +1,4 @@
-package es.martaortiz.appdummy.screens
+package es.martaortiz.appdummy.screens.listado
 
 import android.content.Intent
 import android.util.Patterns

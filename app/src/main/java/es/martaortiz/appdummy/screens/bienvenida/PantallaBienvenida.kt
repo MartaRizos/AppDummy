@@ -1,5 +1,4 @@
-
-package es.martaortiz.appdummy
+package es.martaortiz.appdummy.screens.bienvenida
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState

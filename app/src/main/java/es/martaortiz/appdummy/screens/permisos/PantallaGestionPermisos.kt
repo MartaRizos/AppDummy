@@ -1,4 +1,4 @@
-package es.martaortiz.appdummy.screens
+package es.martaortiz.appdummy.screens.permisos
 
 import android.Manifest
 import android.app.Activity
@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.compose.material.icons.filled.Share
 
 // Estados posibles del permiso de cámara
 sealed class EstadoPermiso {

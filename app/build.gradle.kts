@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     // build.gradle.kts — plugins (nivel de proyecto)
-    id("org.jetbrains.kotlin.plugin.serialization") version libs.versions.kotlin apply false
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
