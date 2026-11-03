@@ -17,6 +17,13 @@ class LibrosViewModel(
         LibrosUiState.Cargando
     )
 
+    private val _busqueda = MutableStateFlow("")
+    val busqueda: StateFlow<String> = _busqueda.asStateFlow()
+
+    private val _autorSeleccionado = MutableStateFlow("Todos")
+    val autorSeleccionado: StateFlow<String> =
+        _autorSeleccionado.asStateFlow()
+
     // Estado público de solo lectura para la interfaz
     val uiState: StateFlow<LibrosUiState> = _uiState.asStateFlow()
 
@@ -34,6 +41,42 @@ class LibrosViewModel(
                     e.message ?: "Error al cargar los libros"
                 )
             }
+        }
+    }
+
+    fun actualizarBusqueda(texto: String) {
+        _busqueda.value = texto
+    }
+
+    fun seleccionarAutor(autor: String) {
+        _autorSeleccionado.value = autor
+    }
+
+    fun alternarFavorito(id: Int) {
+        actualizarLibro(id) { libro ->
+            libro.copy(esFavorito = !libro.esFavorito)
+        }
+    }
+
+    fun alternarLeido(id: Int) {
+        actualizarLibro(id) { libro ->
+            libro.copy(leido = !libro.leido)
+        }
+    }
+
+    private fun actualizarLibro(
+        id: Int,
+        actualizar: (es.martaortiz.appdummy.data.model.Libro) ->
+        es.martaortiz.appdummy.data.model.Libro
+    ) {
+        val estadoActual = _uiState.value
+
+        if (estadoActual is LibrosUiState.Exito) {
+            val librosActualizados = estadoActual.libros.map { libro ->
+                if (libro.id == id) actualizar(libro) else libro
+            }
+
+            _uiState.value = LibrosUiState.Exito(librosActualizados)
         }
     }
 }
