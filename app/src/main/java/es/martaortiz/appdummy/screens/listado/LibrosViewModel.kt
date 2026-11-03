@@ -7,6 +7,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 
 class LibrosViewModel(
     private val repository: LibrosRepository
@@ -16,6 +20,8 @@ class LibrosViewModel(
     private val _uiState = MutableStateFlow<LibrosUiState>(
         LibrosUiState.Cargando
     )
+    // Estado público de solo lectura para la interfaz
+    val uiState: StateFlow<LibrosUiState> = _uiState.asStateFlow()
 
     private val _busqueda = MutableStateFlow("")
     val busqueda: StateFlow<String> = _busqueda.asStateFlow()
@@ -24,8 +30,37 @@ class LibrosViewModel(
     val autorSeleccionado: StateFlow<String> =
         _autorSeleccionado.asStateFlow()
 
-    // Estado público de solo lectura para la interfaz
-    val uiState: StateFlow<LibrosUiState> = _uiState.asStateFlow()
+    val librosFiltrados: StateFlow<List<es.martaortiz.appdummy.data.model.Libro>> =
+        combine(
+            uiState,
+            busqueda,
+            autorSeleccionado
+        ) { estado, textoBusqueda, autor ->
+
+            if (estado is LibrosUiState.Exito) {
+                estado.libros.filter { libro ->
+
+                    val coincideTitulo = libro.titulo.contains(
+                        textoBusqueda,
+                        ignoreCase = true
+                    )
+
+                    val coincideAutor = autor == "Todos" ||
+                            libro.autor == autor
+
+                    coincideTitulo && coincideAutor
+                }
+            } else {
+                emptyList()
+            }
+
+        }.let { flujo ->
+            flujo.stateIn(
+                viewModelScope,
+                kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
+                emptyList()
+            )
+        }
 
     init {
         cargarLibros()
