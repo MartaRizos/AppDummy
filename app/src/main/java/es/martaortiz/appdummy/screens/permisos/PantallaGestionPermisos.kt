@@ -32,7 +32,9 @@ sealed class EstadoPermiso {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaGestionPermisos() {
+fun PantallaGestionPermisos(
+    onVolver: () -> Unit
+) {
 
     val context = LocalContext.current
     val activity = context as? Activity
@@ -87,6 +89,14 @@ fun PantallaGestionPermisos() {
             TopAppBar(
                 title = {
                     Text("Permisos de AppDummy")
+                },
+                navigationIcon = {
+                    IconButton(onClick = onVolver) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver"
+                        )
+                    }
                 }
             )
         }
@@ -263,8 +273,9 @@ fun PantallaGestionPermisos() {
 @Preview(showBackground = true)
 @Composable
 fun PantallaGestionPermisosPreview() {
-
     MaterialTheme {
-        PantallaGestionPermisos()
+        PantallaGestionPermisos(
+            onVolver = {}
+        )
     }
 }

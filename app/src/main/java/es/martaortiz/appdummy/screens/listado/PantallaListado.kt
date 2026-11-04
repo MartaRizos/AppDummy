@@ -413,10 +413,10 @@ fun ItemLibro(
 @Preview(showBackground = true)
 @Composable
 fun PantallaListadoPreview() {
-
-    MaterialTheme {
-        PantallaListado()
-    }
+    PantallaListado(
+        onNavegaADetalle = {},
+        onNavegaAPermisos = {}
+    )
 }
 
 // Vista previa de una tarjeta individual
