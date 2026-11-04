@@ -33,6 +33,8 @@ import es.martaortiz.appdummy.data.repository.LibrosRepository
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaListado(
+    onNavegaADetalle: (Int) -> Unit,
+    onNavegaAPermisos: () -> Unit,
     viewModel: LibrosViewModel = viewModel(
         factory = librosViewModelFactory
     )
