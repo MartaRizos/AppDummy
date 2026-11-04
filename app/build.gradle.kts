@@ -57,8 +57,6 @@ dependencies {
     // Coil para la carga de imágenes
     implementation("io.coil-kt.coil3:coil-compose:3.5.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.5.0")
-    val bom = platform(libs.androidx.compose.bom)
-    implementation(bom)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.activity.compose)
@@ -69,6 +67,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     // Testing
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+
 
     // Navigation Compose (API tipada disponible desde 2.8.0)
     implementation("androidx.navigation:navigation-compose:2.9.8")

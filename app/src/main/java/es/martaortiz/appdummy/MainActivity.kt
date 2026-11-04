@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
             AppDummyTheme {
 
                 // Cambio este valor según la pantalla a mostrar:
-                val pantalla = 3
+                val pantalla = 2
 
                 when (pantalla) {
                     1 -> PantallaBienvenida(
