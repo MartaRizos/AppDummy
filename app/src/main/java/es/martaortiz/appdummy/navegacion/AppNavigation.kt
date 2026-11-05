@@ -6,6 +6,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import es.martaortiz.appdummy.screens.bienvenida.PantallaBienvenida
 import es.martaortiz.appdummy.screens.listado.PantallaListado
+import es.martaortiz.appdummy.screens.detalle.PantallaDetalle
+import es.martaortiz.appdummy.navegacion.Detalle
 
 @Composable
 fun AppNavigation() {
@@ -36,6 +38,14 @@ fun AppNavigation() {
                 },
                 onNavegaAPermisos = {
                     navController.navigate(Permisos)
+                }
+            )
+        }
+
+        composable<Detalle> {
+            PantallaDetalle(
+                onVolver = {
+                    navController.navigateUp()
                 }
             )
         }
