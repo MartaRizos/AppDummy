@@ -100,7 +100,9 @@ fun PantallaListado(
     ) { paddingValues ->
 
         Column(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
 
             // Barra de búsqueda
@@ -221,7 +223,13 @@ fun PantallaListado(
                     } else {
 
                         LazyVerticalGrid(
-                            contentPadding = PaddingValues(horizontal = 8.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            contentPadding = PaddingValues(
+                                horizontal = 8.dp,
+                                vertical = 8.dp
+                            ),
                             columns = GridCells.Fixed(2),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
