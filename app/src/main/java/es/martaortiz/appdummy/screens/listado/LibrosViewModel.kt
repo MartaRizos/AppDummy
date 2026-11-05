@@ -136,11 +136,24 @@ class LibrosViewModel(
         val estadoActual = _uiState.value
 
         if (estadoActual is LibrosUiState.Exito) {
-            val librosActualizados = estadoActual.libros.map { libro ->
-                if (libro.id == id) actualizar(libro) else libro
-            }
 
-            _uiState.value = LibrosUiState.Exito(librosActualizados)
+            val libroActual = estadoActual.libros.find { it.id == id }
+
+            if (libroActual != null) {
+
+                // Generamos el libro con los nuevos valores
+                val libroActualizado = actualizar(libroActual)
+
+                // Guardamos el cambio en el repositorio
+                repository.actualizarLibro(libroActualizado)
+
+                // Actualizamos también el estado del ViewModel
+                val librosActualizados = estadoActual.libros.map { libro ->
+                    if (libro.id == id) libroActualizado else libro
+                }
+
+                _uiState.value = LibrosUiState.Exito(librosActualizados)
+            }
         }
     }
 }
