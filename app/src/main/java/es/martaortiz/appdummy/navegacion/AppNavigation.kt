@@ -31,8 +31,14 @@ fun AppNavigation() {
             if (mostrarBottomBar) {
                 AppDummyBottomBar<Any>(
                     items = itemsNavegacion,
-                    rutaActual = null,
-                    onNavegar = {}
+                    rutaActual = when {
+                        rutaActual?.hasRoute<Listado>() == true -> Listado
+                        rutaActual?.hasRoute<Favoritos>() == true -> Favoritos
+                        else -> null
+                    },
+                    onNavegar = { ruta ->
+                        navController.navigate(ruta)
+                    }
                 )
             }
         }
