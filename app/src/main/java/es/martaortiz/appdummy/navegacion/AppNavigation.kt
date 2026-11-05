@@ -38,7 +38,15 @@ fun AppNavigation() {
                         else -> null
                     },
                     onNavegar = { ruta ->
-                        navController.navigate(ruta)
+                        navController.navigate(ruta) {
+
+                            popUpTo<Listado> {
+                                saveState = true
+                            }
+
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 )
             }
