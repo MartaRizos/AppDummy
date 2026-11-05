@@ -11,7 +11,7 @@ data class ItemNavegacion<T : Any>(
     val icono: ImageVector
 )
 
-val itemsNavegacion = listOf(
+val itemsNavegacion: List<ItemNavegacion<Any>> = listOf(
     ItemNavegacion(
         ruta = Listado,
         titulo = "Libros",

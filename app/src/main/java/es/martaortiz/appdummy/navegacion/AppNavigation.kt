@@ -11,6 +11,8 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import es.martaortiz.appdummy.screens.bienvenida.PantallaBienvenida
 import es.martaortiz.appdummy.screens.listado.PantallaListado
 import es.martaortiz.appdummy.screens.detalle.PantallaDetalle
+import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.padding
 
 @Composable
 fun AppNavigation() {
@@ -27,7 +29,7 @@ fun AppNavigation() {
                         rutaActual?.hasRoute<Favoritos>() == true
 
             if (mostrarBottomBar) {
-                AppDummyBottomBar(
+                AppDummyBottomBar<Any>(
                     items = itemsNavegacion,
                     rutaActual = null,
                     onNavegar = {}
@@ -38,7 +40,8 @@ fun AppNavigation() {
 
         NavHost(
             navController = navController,
-            startDestination = Inicio
+            startDestination = Inicio,
+            modifier = Modifier.padding(innerPadding)
         ) {
 
             composable<Inicio> {
