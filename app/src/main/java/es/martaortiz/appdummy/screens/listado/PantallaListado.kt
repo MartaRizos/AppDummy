@@ -29,6 +29,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import es.martaortiz.appdummy.data.model.Libro
 import es.martaortiz.appdummy.data.repository.LibrosRepository
+import androidx.compose.foundation.clickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -233,6 +234,9 @@ fun PantallaListado(
 
                                 ItemLibro(
                                     libro = libro,
+                                    onClick = {
+                                        onNavegaADetalle(libro.id)
+                                    },
                                     onToggleLeido = { id ->
                                         viewModel.alternarLeido(id)
                                     },
@@ -252,6 +256,7 @@ fun PantallaListado(
 @Composable
 fun ItemLibro(
     libro: Libro,
+    onClick: () -> Unit,
     onToggleLeido: (Int) -> Unit,
     onToggleFavorito: (Int) -> Unit
 ) {
@@ -259,7 +264,9 @@ fun ItemLibro(
     val context = LocalContext.current
 
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
     ) {
 
         Column(
@@ -436,8 +443,9 @@ fun ItemLibroPreview() {
                 esFavorito = true,
                 leido = false
             ),
-            onToggleLeido = { },
-            onToggleFavorito = { }
+            onClick = {},
+            onToggleLeido = {},
+            onToggleFavorito = {}
         )
     }
 }
