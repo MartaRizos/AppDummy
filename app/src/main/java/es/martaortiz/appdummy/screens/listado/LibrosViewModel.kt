@@ -76,8 +76,9 @@ class LibrosViewModel(
     private fun cargarLibros() {
         viewModelScope.launch {
             try {
-                val libros = repository.obtenerLibros()
-                _uiState.value = LibrosUiState.Exito(libros)
+                repository.libros.collect { libros ->
+                    _uiState.value = LibrosUiState.Exito(libros)
+                }
             } catch (e: Exception) {
                 _uiState.value = LibrosUiState.Error(
                     e.message ?: "Error al cargar los libros"
