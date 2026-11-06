@@ -30,6 +30,7 @@ import androidx.compose.material3.SnackbarHostState
 import es.martaortiz.appdummy.data.model.Libro
 import es.martaortiz.appdummy.data.repository.LibrosRepository
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,147 +100,131 @@ fun PantallaListado(
         }
     ) { paddingValues ->
 
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-
-            // Barra de búsqueda
-            OutlinedTextField(
-                value = busqueda,
-                onValueChange = { viewModel.actualizarBusqueda(it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = 16.dp,
-                        vertical = 8.dp
-                    ),
-                placeholder = {
-                    Text("Buscar libros...")
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null
-                    )
-                },
-                trailingIcon = {
-                    AnimatedVisibility(
-                        visible = busqueda.isNotEmpty()
-                    ) {
-                        IconButton(
-                            onClick = { viewModel.actualizarBusqueda("") }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = "Borrar búsqueda"
-                            )
-                        }
-                    }
-                },
-                singleLine = true
-            )
-
-            // Filtros por autor
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(bottom = 8.dp)
-            ) {
-                items(autores) { autor ->
-
-                    FilterChip(
-                        selected = autor == autorSeleccionado,
-                        onClick = {
-                            viewModel.seleccionarAutor(autor)
-                        },
-                        label = {
-                            Text(autor)
-                        }
-                    )
-                }
-            }
-
-            // Resultados según el estado del ViewModel
             when (uiState) {
 
                 is LibrosUiState.Cargando -> {
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
                 }
 
                 is LibrosUiState.Error -> {
-
                     val mensaje = (uiState as LibrosUiState.Error).mensaje
 
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = mensaje,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
+                    Text(
+                        text = mensaje,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
                 }
 
                 is LibrosUiState.Exito -> {
 
-                    if (librosFiltrados.isEmpty()) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(
+                            horizontal = 8.dp,
+                            vertical = 8.dp
+                        ),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
 
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
+                        // Buscador
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            OutlinedTextField(
+                                value = busqueda,
+                                onValueChange = {
+                                    viewModel.actualizarBusqueda(it)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp),
+                                placeholder = {
+                                    Text("Buscar libros...")
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = null
+                                    )
+                                },
+                                trailingIcon = {
+                                    AnimatedVisibility(
+                                        visible = busqueda.isNotEmpty()
+                                    ) {
+                                        IconButton(
+                                            onClick = {
+                                                viewModel.actualizarBusqueda("")
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Clear,
+                                                contentDescription = "Borrar búsqueda"
+                                            )
+                                        }
+                                    }
+                                },
+                                singleLine = true
+                            )
+                        }
+
+                        // Filtros por autor
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            LazyRow(
+                                contentPadding = PaddingValues(horizontal = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-
-                                Icon(
-                                    imageVector = Icons.Default.SearchOff,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(64.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-
-                                Spacer(
-                                    modifier = Modifier.height(16.dp)
-                                )
-
-                                Text(
-                                    text = "Sin resultados para \"$busqueda\"",
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
+                                items(autores) { autor ->
+                                    FilterChip(
+                                        selected = autor == autorSeleccionado,
+                                        onClick = {
+                                            viewModel.seleccionarAutor(autor)
+                                        },
+                                        label = {
+                                            Text(autor)
+                                        }
+                                    )
+                                }
                             }
                         }
 
-                    } else {
+                        // Mensaje cuando no hay resultados
+                        if (librosFiltrados.isEmpty()) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(24.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.SearchOff,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(64.dp),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
 
-                        LazyVerticalGrid(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            contentPadding = PaddingValues(
-                                horizontal = 8.dp,
-                                vertical = 8.dp
-                            ),
-                            columns = GridCells.Fixed(2),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    Text(
+                                        text = "Sin resultados para \"$busqueda\"",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                }
+                            }
+                        } else {
 
                             items(
                                 items = librosFiltrados,
                                 key = { it.id }
                             ) { libro ->
-
                                 ItemLibro(
                                     libro = libro,
                                     onClick = {
