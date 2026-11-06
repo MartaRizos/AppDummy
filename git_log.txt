@@ -1,0 +1,55 @@
+﻿2c04a18 Creación inicial del proyecto
+3da953d Actualización de dependencias
+ee73580 Corrección de dependencias
+c665402 Actualización de MainActivity.kt
+6c81464 Cosntrucción de la pantalla de bienvenida
+20f13f7 Implementación de requisitos: R3 - Conservar el nombre al rotar: rememberSaveable
+35512fe  - Corrección de setContent en MainActivity.kt para abrir PantallaPrincipal.kt  - Inclusión de permisos de internet en AndroidManifest.xml
+27d72d5 Creado y completado README.md con decisiones propias y permisos declarados hasta ahora
+0f0d2e2 Creada la pantalla de listado de libros cumpliendo con los requisitos del ejercicio
+bbe676c Creado icono nocover.png en la carpeta drawable
+7d20c5b Cambiado setContent para poder emular la pantalla de listado de libros
+9a8661b Implementada PantallaGestionPermisos Declarado permiso PELIGROSO de cámara en AndroidManifest.xml
+595325b Implementación de requisitos R16 y R17
+13366bc Añadido when en la función onCreate para poder elegir qué pantalla mostrar en función de una variable
+154cd69 Solucionado problema de iconos que se solapaban (leído y favorito)
+f5d879e Última revisión y corrección de pequeños bugs de la app
+6631c64 Reestructuración del formato del README.md
+e442caf Regeberadi gitlog.txt
+04c38d3 Añadidas dependencias y plugins necesarios para AppDummy_v2
+6cf4f92 Corrección de dependencias y reorganización de paquetes de la estructura del proyecto
+9627546 Creación de la clases Libro.kt, LibrosRepository.kt y LibrosUiState.kt
+2ef61c6 Creada clase LibrosViewModel.kt
+543a87e - Estados de búsqueda y filtro - Métodos de actualización - Acciones de favoritos y lectura
+87d6a42 Creación de la clase LibrosViewModelFactory.kt
+7724d63 - Crear clase LibrosEvento.kt - Añadir SharedFlow a LibrosViewModel.kt - Método alternarFavorito()
+c1ab8de Adaptación de PantallaListado para funcionar con ViewModel
+d28ae29 Conexión de StateFlow y SharedFlow
+05c8db7 Implementadas pruebas unitarias
+f369047 Creada clase Rutas.kt
+8694e59 Añadidos permisos y gestión de navegación
+cac25aa Centralización de la navegación en AppNavigation.kt
+ef53d22 Preparación de lógica para la recuperación de un libro a partir de su ID
+37c2eda Creación de la clase DetalleViewModel.kt
+9805dac Creada clase DetalleViewModelFactory.kt
+821a4f7 Creada clase PantallaDetalle.kt
+c699571 Añadida PantallaDetalle al navController de AppNavigation.kt
+31be1e1 Añadido onClick para pasar a la pantalla de detalle del libro
+d074497 Ahora ambos ViewModels utilizan la misma instancia AppContainer.librosRepository para poder recuperar los valores actualizados cuando se modifica un libro
+32adead Creada lista de objetos de navegación
+101ca5e Creada clase AppDummyBottomBar.kt para recibir la lista de items de navegación
+a8e9e41 Gestionado problema de scroll vertical en la pantalla de listado de libros
+827d91f Gestionado problema de scroll vertical en la pantalla de listado de libros
+1430209 Solucionado problema de tipado con los items de navegación
+c6e0c4c Conexión de la BottomBar con la navegación real
+8076277 Añadida PantallaFavoritos.kt a la navegación
+d7e1e47 Configurada PantallaListado como destino de referencia en la pila (Pantalla principal)
+40cedda Implementada baking property en la lista de libros
+18bb0da Mejorada carga de libros. Ahora el ViewModel observa continuamente el StateFlow del repositorio
+cba206f Creada ckase FavoritosViewModel.kt. Recibe todos los libros del repositorio y genera una lista que contiene exclusivamente los favoritos.
+42f8141 Creada clase FavoritosViewModelFactory.kt. Proporciona al ViewModel exactamente la misma instancia del repositorio que utiliza el listado.
+bcc0522 Añadida TopAppBar a la pantalla de favoritos
+b6b95ed Integración de Gestión de Permisos en la navegación.
+528ff8e Solucionado requerimiento obligatorio de cámara en el dispositivo para la instalación del permiso
+2e4423f Actualiza git_log.txt con el historial completo de V1 y V2
+5bbf12a Actualizado README.md de la versión 2 del proyecto
