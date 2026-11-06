@@ -14,6 +14,7 @@ import es.martaortiz.appdummy.screens.detalle.PantallaDetalle
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.padding
 import es.martaortiz.appdummy.screens.favoritos.PantallaFavoritos
+import es.martaortiz.appdummy.screens.permisos.PantallaGestionPermisos
 
 @Composable
 fun AppNavigation() {
@@ -88,6 +89,14 @@ fun AppNavigation() {
 
             composable<Detalle> {
                 PantallaDetalle(
+                    onVolver = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+
+            composable<Permisos> {
+                PantallaGestionPermisos(
                     onVolver = {
                         navController.navigateUp()
                     }

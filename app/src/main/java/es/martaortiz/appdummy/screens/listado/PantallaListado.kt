@@ -88,10 +88,10 @@ fun PantallaListado(
                     Text("AppDummy")
                 },
                 actions = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = onNavegaAPermisos) {
                         Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "Perfil"
+                            imageVector = Icons.Default.Security,
+                            contentDescription = "Gestión de permisos"
                         )
                     }
                 }
